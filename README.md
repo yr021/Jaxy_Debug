@@ -5,4 +5,4 @@
     ./db-script/db_demo.sh
   
   
-2- 
+2- ./compile.sh ; ./run.sh 
