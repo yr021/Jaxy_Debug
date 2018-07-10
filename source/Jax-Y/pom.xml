@@ -1,0 +1,256 @@
+
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.github.rac021</groupId>
+    <artifactId>Jax-Y</artifactId>
+    <version>1.2</version>
+    <packaging>war</packaging>
+    <description>Jax-Y</description>
+    <url>https://github.com/rac021/Jax-Y</url>
+    
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <packaging.type>war</packaging.type>
+        <failOnMissingWebXml>false</failOnMissingWebXml>
+        <version.io.thorntail>2.0.0.Final</version.io.thorntail>
+        <version.jaxy>1.2</version.jaxy>
+    </properties>
+    
+    <dependencyManagement>
+        
+        <dependencies>
+            
+            <dependency>
+                <groupId>io.thorntail</groupId>
+                <artifactId>bom</artifactId>
+                <version>${version.io.thorntail}</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+            
+        </dependencies>
+        
+    </dependencyManagement>
+    
+    <build>
+        
+        <finalName>jax-y</finalName>
+        
+        <plugins>
+
+            <plugin>
+                <groupId>io.thorntail</groupId>
+                <artifactId>thorntail-maven-plugin</artifactId>
+                <version>${version.io.thorntail}</version>
+                <configuration>
+                    <mainClass>entry.Main</mainClass>
+                    <properties>
+                        <swarm.bind.address>0.0.0.0</swarm.bind.address>
+                        <java.net.preferIPv4Stack>true</java.net.preferIPv4Stack>
+                    </properties>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>package</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.6.1</version>
+                <configuration>
+                    <debug>true</debug>
+                    <optimize>true</optimize>
+                    <showDeprecation>false</showDeprecation>
+                </configuration>
+            </plugin>
+            
+            <!--            <plugin>
+                <groupId>com.sebastian-daschner</groupId>
+                <artifactId>jaxrs-analyzer-maven-plugin</artifactId>
+                <version>0.12</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>analyze-jaxrs</goal>
+                        </goals>
+                        <configuration>
+                            <backend>swagger</backend>
+                            <deployedDomain>localhost:8080</deployedDomain>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>-->
+
+        </plugins>
+        
+    </build>
+    
+    <dependencies>
+        
+        <!-- G-Jax-Security-Provider Dependency -->         
+        <dependency>
+            <groupId>com.github.rac021</groupId>
+            <artifactId>G-Jax-Security-Provider</artifactId>
+            <version>${version.jaxy}</version>
+        </dependency>
+        
+        <!-- G-Jax-Service-Discovery Dependency -->         
+        <dependency>
+            <groupId>com.github.rac021</groupId>
+            <artifactId>G-Jax-Service-Discovery</artifactId>
+            <version>${version.jaxy}</version>
+        </dependency>
+        
+        <!-- Thorntail ( WildFly Swarm ) Dependencies -->                  
+        <dependency>
+            <groupId>io.thorntail</groupId>
+            <artifactId>microprofile</artifactId>
+        </dependency>
+        
+        <dependency>
+            <groupId>io.thorntail</groupId>
+            <artifactId>microprofile-config</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.wildfly.swarm</groupId>
+                    <artifactId>config-api-runtime</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        
+        <!--        <dependency>
+            <groupId>io.thorntail</groupId>
+            <artifactId>config-api-runtime</artifactId>
+        </dependency>-->
+        
+        <dependency>
+            <groupId>io.thorntail</groupId>
+            <artifactId>jpa-eclipselink</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.thorntail</groupId>
+            <artifactId>management</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.thorntail</groupId>
+            <artifactId>management-console</artifactId>	
+        </dependency>
+        <dependency>
+            <groupId>io.thorntail</groupId>
+            <artifactId>transactions</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.thorntail</groupId>
+            <artifactId>ejb</artifactId>
+        </dependency>        
+        <dependency>
+            <groupId>io.thorntail</groupId>
+            <artifactId>keycloak</artifactId>
+        </dependency>
+        <!--        <dependency>
+            <groupId>io.thorntail</groupId>
+            <artifactId>bean-validation</artifactId>
+        </dependency>-->
+        
+        <!--        <dependency>
+            <groupId>io.thorntail</groupId>
+            <artifactId>microprofile-health</artifactId>
+        </dependency>-->
+        <!--        <dependency>
+            <groupId>io.thorntail</groupId>
+            <artifactId>microprofile-metrics</artifactId>
+        </dependency>
+        -->
+        <dependency>
+            <groupId>io.thorntail</groupId>
+            <artifactId>jsf</artifactId>
+        </dependency>
+        
+        
+        <dependency>
+            <groupId>org.jboss.weld</groupId>
+            <artifactId>weld-core</artifactId>
+            <version>2.4.7.Final</version>
+        </dependency>
+        
+                 
+        <!-- Postgresql JDBC Driver-->
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>9.4-1206-jdbc42</version>
+        </dependency>
+
+        <!-- mySql JDBC Driver-->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>8.0.11</version>
+        </dependency>
+        
+        <!-- Java Runtime Compiler -->
+        <dependency>
+            <groupId>net.openhft</groupId>
+            <artifactId>compiler</artifactId>
+            <version>2.3.0</version>
+        </dependency>
+
+        <!-- Yaml API for Configuration -->
+        <dependency>
+            <groupId>com.esotericsoftware.yamlbeans</groupId>
+            <artifactId>yamlbeans</artifactId>
+            <version>1.11</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>javax.ws.rs</groupId>
+            <artifactId>javax.ws.rs-api</artifactId>
+            <version>2.1</version>
+        </dependency>
+
+
+        <!--        <dependency>
+            <groupId>org.butterfaces</groupId>
+            <artifactId>components</artifactId>
+            <version>3.0.2</version>
+        </dependency>-->
+        
+        <dependency>
+            <groupId>net.bootsfaces</groupId>
+            <artifactId>bootsfaces</artifactId>
+            <version>1.2.0</version>
+            <scope>compile</scope>
+        </dependency>
+
+      
+        <dependency>
+            <groupId>org.shredzone.acme4j</groupId>
+            <artifactId>acme4j-client</artifactId>
+            <version>2.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.shredzone.acme4j</groupId>
+            <artifactId>acme4j-utils</artifactId>
+            <version>2.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>1.7.25</version>
+            <scope>runtime</scope>
+        </dependency>
+        
+        
+    </dependencies>
+
+</project>
+

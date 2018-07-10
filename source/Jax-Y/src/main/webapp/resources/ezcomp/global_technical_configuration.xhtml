@@ -1,0 +1,76 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:cc="http://xmlns.jcp.org/jsf/composite"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+    <!-- INTERFACE -->
+    <cc:interface>
+    </cc:interface>
+
+    <!-- IMPLEMENTATION -->
+    
+    <cc:implementation>
+        <b:well>
+
+            Global Technical Configuration 
+
+            <h:form prependId="false" id="formeDetailsGlobalConf" >
+
+                <br /> 
+
+                <b:panelGrid columns="2"  colSpans="8,4" >
+
+                    <label class="input-group-addon" style="text-align: left" >MaxConcurrentUsers</label>
+                    <h:outputText  class="form-control" id="MaxConcurrentUsers" 
+                                   style="margin-bottom: 5px"
+                                   value="#{myBean.getMaxConcurrentUsers()}" />
+
+                    <label class="input-group-addon" style="text-align: left">ThreadPoolSize</label>
+                    <h:outputText  class="form-control" id="ThreadPoolSize" 
+                                   style="margin-bottom: 5px"
+                                   value="#{myBean.getThreadPoolSize()}" />
+
+                    <label class="input-group-addon" style="text-align: left">DefaultMaxThreadPerService</label>
+                    <h:outputText  class="form-control" id="DefaultMaxThread" 
+                                   style="margin-bottom: 5px"
+                                   value="#{myBean.getDefaultMaxThread()}" />
+
+                    <label class="input-group-addon" style="text-align: left">SelectSize</label>
+                    <h:outputText  class="form-control" id="SelectSize" 
+                                   style="margin-bottom: 5px"
+                                   value="#{myBean.getSelectSize()}" />
+
+                    <label class="input-group-addon" style="text-align: left">ResponseCacheSize</label>
+                    <h:outputText  class="form-control" id="ResponseCacheSize" 
+                                   style="margin-bottom: 5px"
+                                   value="#{myBean.getResponseCacheSize()}" />
+
+                    <label class="input-group-addon" style="text-align: left">Ratio</label>
+                    <h:outputText  class="form-control" id="Ratio" 
+                                   style="margin-bottom: 5px"
+                                   value="#{myBean.getRatio()}" />
+
+                    <label class="input-group-addon" style="text-align: left">validRequestTimeout</label>
+                    <h:outputText  class="form-control btn-danger" id="validRequestTime" 
+                                   style="margin-bottom: 5px"
+                                   value="#{myBean.getValidRequestTimeout()} ( s ) " />
+
+                    <label class="input-group-addon" style="text-align: left">WorkerQueue</label>
+                    <h:outputText  class="form-control" id="WorkerQueue"
+                                   style="margin-bottom: 5px"
+                                   value="#{myBean.getWorkerQueue()}" />
+
+                    <label class="input-group-addon" style="text-align: left">WorkerTimeOut</label>
+                    <h:outputText  class="form-control" id="WorkerTimeOut" 
+                                   style="margin-bottom: 5px" 
+                                   value="#{myBean.getWorkerTimeOut()}" />
+
+                </b:panelGrid>
+
+            </h:form>
+
+        </b:well>
+    </cc:implementation>
+</html>

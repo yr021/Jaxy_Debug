@@ -1,0 +1,226 @@
+
+package {PACKAGE_NAME} ;
+
+import javax.ws.rs.GET ;
+import javax.inject.Inject ;
+import javax.ws.rs.Produces ;
+import javax.ws.rs.QueryParam ;
+import javax.ws.rs.HeaderParam ;
+import javax.ws.rs.core.UriInfo ;
+import javax.ws.rs.core.Context ;
+import javax.ws.rs.core.Response ;
+import javax.annotation.PostConstruct ;
+import com.rac021.jax.api.crypto.AcceptType ;
+import com.rac021.jax.api.qualifiers.Format ;
+import com.rac021.jax.api.crypto.CipherTypes ;
+import com.rac021.jax.api.streamers.IStreamer ;
+import com.rac021.jax.api.qualifiers.security.Policy ;
+import com.rac021.jax.api.qualifiers.security.Public ;
+import com.rac021.jax.api.qualifiers.security.Cipher ;
+import com.rac021.jax.api.qualifiers.ServiceRegistry ;
+import com.rac021.jax.api.qualifiers.ResourceRegistry ;
+import com.rac021.jax.api.streamers.StreamerOutputXml ;
+import com.rac021.jax.api.qualifiers.security.Secured ;
+import com.rac021.jax.api.streamers.StreamerOutputJson ;
+import com.rac021.jax.api.streamers.StreamerOutputTemplate ;
+import com.rac021.jax.api.streamers.StreamerOutputXmlEncrypted ;
+import com.rac021.jax.api.streamers.DefaultStreamerConfigurator ;
+import com.rac021.jax.api.streamers.StreamerOutputJsonEncrypted ;
+import com.rac021.jax.api.streamers.StreamerOutputTemplateEncrypted ;
+
+
+import org.eclipse.microprofile.metrics.annotation.Counted ;
+
+
+/**
+ *
+ * @author R.Yahiaoui
+ */
+
+@ServiceRegistry("{SERVICE_CODE}")
+{SECURITY}
+@Cipher( cipherType = { {CIPHERS} } )
+
+@Counted(name = "{PACKAGE_NAME}_{SERVICE_NAME}", absolute = true, reusable = true, monotonic = true)
+
+public class {SERVICE_NAME}      {
+
+    @ResourceRegistry("{RESOURCE_CODE}")
+    private Resource {RESOURCE_NAME}      ;
+
+    @Inject
+    @Format( AcceptType.JSON_PLAIN )
+    private IStreamer streamerOutputXml   ;
+    
+    @Inject
+    @Format( AcceptType.JSON_PLAIN )
+    private IStreamer streamerOutputJson  ;
+    
+    @Inject
+    @Format( AcceptType.XML_ENCRYPTED )
+    private IStreamer streamerOutputXmlEncrypted  ;
+    
+    @Inject
+    @Format( AcceptType.JSON_ENCRYPTED )
+    private IStreamer streamerOutputJsonEncrypted ;
+   
+    @Inject
+    @Format( AcceptType.TEMPLATE_PLAIN )
+    private IStreamer streamerOutputTemplate           ;
+   
+    @Inject
+    @Format( AcceptType.TEMPLATE_ENCRYPTED )
+    private IStreamer streamerOutputTemplateEncrypted  ;
+   
+    @PostConstruct
+    public void init()      {
+    }
+
+    public {SERVICE_NAME}() {
+    }
+   
+    @GET
+    @Produces("xml/plain")
+    public Response getResourceASXml( @HeaderParam("Keep") String filterdIndex, @Context UriInfo uriInfo , {SQL_PARAMS} ) {    
+
+        /**
+        * DefaultStreamerConfigurator defaultStreamerConfigurator = new
+        * DefaultStreamerConfigurator()                        ;
+        * defaultStreamerConfigurator.setNbrCores(2)           ;
+        * defaultStreamerConfigurator.setRatio(4)              ;
+        * defaultStreamerConfigurator.setRecorderLenght(16000) ;
+        * streamerOutputXml.setStreamerConfigurator(defaultStreamerConfigurator) ;
+        */
+
+        System.out.println(" G-JAX - Process : getResourceASXml ... ") ; 
+
+        return Response.status(Response.Status.OK)
+                       .entity( streamerOutputXml.wrapResource( {RESOURCE_NAME}           , 
+                                                                {DTO_CLASS}               ,
+                                                                filterdIndex              , 
+                                                                uriInfo.getQueryParameters() ))
+                       .build() ;
+    }
+
+    @GET
+    @Produces("xml/encrypted")
+    public Response getResourceASEnctyptedXml( @HeaderParam("Keep") String filterdIndex, @Context UriInfo uriInfo , {SQL_PARAMS} ) {    
+
+        /**
+        * DefaultStreamerConfigurator defaultStreamerConfigurator = new
+        * DefaultStreamerConfigurator()                        ;
+        * defaultStreamerConfigurator.setNbrCores(2)           ;
+        * defaultStreamerConfigurator.setRatio(4)              ;
+        * defaultStreamerConfigurator.setRecorderLenght(16000) ;
+        * streamerOutputXmlEncrypted.setStreamerConfigurator(defaultStreamerConfigurator) ;
+        */
+            
+        System.out.println(" G-JAX - Process : getResourceASEnctyptedXml ... ") ; 
+        
+        return Response.status(Response.Status.OK)
+                       .entity(streamerOutputXmlEncrypted.wrapResource( {RESOURCE_NAME}           , 
+                                                                        {DTO_CLASS}               ,
+                                                                        filterdIndex              , 
+                                                                        uriInfo.getQueryParameters() ))
+                       .build() ;
+    }
+
+    @GET
+    @Produces("json/plain")
+    public Response getResourceASJson( @HeaderParam("Keep") String filterdIndex, @Context UriInfo uriInfo, {SQL_PARAMS} ) {
+          
+        /**
+        * DefaultStreamerConfigurator defaultStreamerConfigurator = new
+        * DefaultStreamerConfigurator()                        ;
+        * defaultStreamerConfigurator.setNbrCores(2)           ;
+        * defaultStreamerConfigurator.setRatio(4)              ;
+        * defaultStreamerConfigurator.setRecorderLenght(16000) ;
+        * streamerOutputJson.setStreamerConfigurator(defaultStreamerConfigurator) ;
+        */
+  
+        System.out.println(" G-JAX - Process : getResourceASJson ... ") ; 
+
+        return Response.status(Response.Status.OK)
+                       .entity(streamerOutputJson.wrapResource( {RESOURCE_NAME}           , 
+                                                                {DTO_CLASS}               ,
+                                                                filterdIndex              , 
+                                                                uriInfo.getQueryParameters() ))
+                       .build() ;
+    }
+    
+    @GET
+    @Produces("json/encrypted")
+    public Response getResourceASEncryptedJson( @HeaderParam("keep") String filterdIndex , 
+                                                @Context UriInfo uriInfo, 
+                                                {SQL_PARAMS})  {
+
+        /**
+        * DefaultStreamerConfigurator defaultStreamerConfigurator = new
+        * DefaultStreamerConfigurator()                        ;
+        * defaultStreamerConfigurator.setNbrCores(2)           ;
+        * defaultStreamerConfigurator.setRatio(4)              ;
+        * defaultStreamerConfigurator.setRecorderLenght(16000) ;
+        * streamerOutputJsonEncrypted.setStreamerConfigurator(defaultStreamerConfigurator) ;
+        */
+  
+        System.out.println(" G-JAX - Process : getResourceASEncryptedJson ... ") ; 
+
+        return Response.status(Response.Status.OK)
+                       .entity( streamerOutputJsonEncrypted.wrapResource( {RESOURCE_NAME}           , 
+                                                                          {DTO_CLASS}               ,
+                                                                          filterdIndex              , 
+                                                                          uriInfo.getQueryParameters() ))
+                       .build() ;
+    }
+
+    @GET
+    @Produces("template/plain")
+    public Response getResourceASTemplate( @HeaderParam("keep") String filterdIndex , 
+                                           @Context UriInfo uriInfo                 , 
+                                           {SQL_PARAMS})    {
+
+        /**
+        * DefaultStreamerConfigurator defaultStreamerConfigurator = new
+        * DefaultStreamerConfigurator()                        ;
+        * defaultStreamerConfigurator.setNbrCores(2)           ;
+        * defaultStreamerConfigurator.setRatio(4)              ;
+        * defaultStreamerConfigurator.setRecorderLenght(16000) ;
+        * streamerOutputTemplate.setStreamerConfigurator(defaultStreamerConfigurator) ;
+        */
+  
+        System.out.println(" G-JAX - Process : getResourceASTemplate ... ") ; 
+
+        return Response.status(Response.Status.OK)
+                       .entity( streamerOutputTemplate.wrapResource( {RESOURCE_NAME}           , 
+                                                                     {DTO_CLASS}               ,
+                                                                     filterdIndex              , 
+                                                                     uriInfo.getQueryParameters() ))
+                       .build() ;
+    }
+
+    @GET
+    @Produces("template/encrypted")
+    public Response getResourceASTemplateEncrypted( @HeaderParam("keep") String filterdIndex , 
+                                                    @Context UriInfo uriInfo                 , 
+                                                    {SQL_PARAMS})    {
+
+        /**
+        * DefaultStreamerConfigurator defaultStreamerConfigurator = new
+        * DefaultStreamerConfigurator()                        ;
+        * defaultStreamerConfigurator.setNbrCores(2)           ;
+        * defaultStreamerConfigurator.setRatio(4)              ;
+        * defaultStreamerConfigurator.setRecorderLenght(16000) ;
+        * streamerOutputTemplateEncrypted.setStreamerConfigurator(defaultStreamerConfigurator) ;
+        */
+  
+        System.out.println(" G-JAX - Process : getResourceASTemplateEncrypted ... ") ; 
+
+        return Response.status(Response.Status.OK)
+                       .entity( streamerOutputTemplateEncrypted.wrapResource( {RESOURCE_NAME}           , 
+                                                                              {DTO_CLASS}               ,
+                                                                              filterdIndex              , 
+                                                                              uriInfo.getQueryParameters() ))
+                       .build() ;
+    }
+
+}

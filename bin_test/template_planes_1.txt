@@ -1,0 +1,14 @@
+
+ header {{{    
+ <DATAS>  
+ }}}
+
+ body {{{      
+  <data>
+    "Distance":"{{ distance_km }}"
+  </data>
+ }}}
+
+ footer {{{    
+ </DATAS>
+ }}}

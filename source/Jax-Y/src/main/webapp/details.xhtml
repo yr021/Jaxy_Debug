@@ -1,0 +1,333 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:ez="http://xmlns.jcp.org/jsf/composite/ezcomp">
+
+
+    <h:head>
+        <title>Jax-Y Detail Service</title>
+    </h:head>    
+
+    <script src="js/hash.js" type="text/javascript" charset="utf-8"></script>
+
+    <style>
+
+        body {
+            color: black;
+            background-color: whitesmoke;
+        }
+
+        div form {
+            width:100%;
+        }
+        div > .btn-group {
+            width:100%;
+        }
+        div > .btn-group > button {
+            width:100%;
+        }
+        div > .btn-group > ul {
+            width:100%;
+        }
+    </style>
+
+    <h:body>
+
+        <f:metadata>
+            <f:event type="preRenderView" listener="#{myBean.redirectIfEmptyService()}"/>
+        </f:metadata>
+
+        <br />
+
+        <b:container>
+
+
+            <b:panel look="primary" title="Service : #{myBean.getSelectedServiceName()} [  #{myBean.getSelectedServiceUriTemplate()} ]" collapsible="false">
+
+
+                <b:panelGrid columns="5" colSpans="2,1,3,3,3" >
+
+                    <b:row>
+                        <b:column style="margin-bottom: 5px"> 
+                            <label class="input-group-addon" style="text-align: left" > Security </label> </b:column>
+                        <b:column><h:outputText class="form-control"  
+                                                id="selectedServiceName" 
+                                                value="#{myBean.getSelectedServiceSecurity()}" /> </b:column>
+                    </b:row>
+
+                    <b:row>
+                        <b:column style="margin-bottom: 5px " > <label class="input-group-addon" style="text-align: left" >Threads</label> </b:column>
+                        <b:column><h:outputText class="form-control"  
+                                                id="selectedServiceNbThreads" 
+                                                value="#{myBean.getSelectedServiceMaxThreads()}" /> </b:column>
+                    </b:row>
+
+
+                    <b:row>
+                        <b:column style="margin-bottom: 5px" > <label class="input-group-addon" style="text-align: left" >Accept </label> </b:column>
+                        <b:column>
+                            <b:form prependId="false">
+                                <b:selectOneMenu value="#{myBean.acceptItem}" required="true" onchange="#{myBean.updateCipher()}" >
+                                    <f:selectItems value="#{myBean.selectedServiceAccepts}" var="selectedAcceptItem" itemValue="#{selectedAcceptItem}" />
+                                    <f:ajax event="change" render="@this scriptID keepIDForm:keepID CipherItemsId TemplateId tab_0:selectedServiceScript " />
+                                </b:selectOneMenu>
+                            </b:form>
+                        </b:column>
+                    </b:row>
+
+                    <b:row>
+                        <b:column style="margin-bottom: 5px" > <label class="input-group-addon" style="text-align: left" >Cipher</label> </b:column>
+                        <b:column>
+                            <b:form  prependId="false" id="CipherItemsId" >
+                                <b:selectOneMenu   value="#{myBean.cipherItem}" disabled="#{ not myBean.acceptItem.contains('crypt') }" required="true" onchange="#{myBean.updateTemplate()}" >
+                                    <f:selectItems value="#{myBean.selectedServiceCiphers}"  />
+                                    <f:ajax event="change" render="@this tab_0:selectedServiceScript tab_1:selectedServiceScriptCryptor "/>
+                                </b:selectOneMenu>
+                            </b:form>
+                        </b:column>
+                    </b:row>
+
+                    <b:row>
+                        <b:column style="margin-bottom: 5px"> <label class="input-group-addon" style="text-align: left" >Template</label> </b:column>
+                        <b:column> 
+                            <b:form  prependId="false" id="TemplateId" >
+                                <b:inputTextarea class="form-control"
+                                                 id="selectedServiceTemplate" 
+                                                 value="#{myBean.getSelectedServiceTemplate()}" 
+                                                 readonly="true" 
+                                                 rendered="#{ myBean.acceptItem.contains('template') }"
+                                                 style="overflow:hidden ; 
+                                                 resize: none;" 
+                                                 rows="#{myBean.getSelectedServiceTotalLinesInTemplate() }" /> 
+                            </b:form>
+                        </b:column>
+                    </b:row>
+
+                </b:panelGrid>
+
+                <br />
+
+            </b:panel>
+
+
+
+            <b:form  prependId="false" id="formExpCalculator" >
+
+                <b:panelGrid columns="5" colSpans="2,3,3,2,2" >
+
+                    <b:row>
+                        <b:column style="margin-bottom: 5px " > <label class="input-group-addon" style="text-align: left">Filters</label> </b:column>
+                        <b:column>
+                            <b:selectOneMenu  id="selectedFilterID" value="#{myBean.selectedFilter}" 
+                                              requiredMessage="Select Filter !" 
+                                              required="#{empty param['skipvalidation']}"
+                                              disabled="#{myBean.disableFilterSelection()}" >
+                                <f:selectItem  itemValue="" itemLabel="--select--" noSelectionOption="true" />
+                                <f:selectItems value="#{myBean.selectedServiceFilters}"  />
+                            </b:selectOneMenu>
+                        </b:column>
+                        <b:column>
+                            <b:message id="messagesFilterID"  showDetail="true"  
+                                       for="formExpCalculator:selectedFilterID" />
+                        </b:column>
+
+                    </b:row>
+
+                    <b:row>
+                        <b:column style="margin-bottom: 5px" > <label class="input-group-addon" style="text-align: left">Expression</label> </b:column>
+                        <b:column>
+                            <b:selectOneMenu id="selectedExpressionID"  
+                                             value="#{myBean.selectedExpression}" 
+                                             requiredMessage="Select Expression !" 
+                                             required="#{empty param['skipvalidation']}" 
+                                             disabled="#{myBean.disableSelectionForExpressionAnsValueAndBottom()}" >
+                                <f:selectItem  itemValue="" itemLabel="--select--" noSelectionOption="true" />
+                                <f:selectItems value="#{myBean.expressions}"  />
+                            </b:selectOneMenu>
+                        </b:column>
+                        <b:column>
+                            <b:message id="messagesExpressionID"  showDetail="true"  
+                                       for="formExpCalculator:selectedExpressionID" />
+                        </b:column>
+                    </b:row>
+
+                    <b:row>
+                        <b:column style="margin-bottom: 5px" > <label class="input-group-addon" style="text-align: left" >Value</label> </b:column>
+                        <b:column>
+                            <b:inputText class="form-control" 
+                                         id="selectedServiceValueExpressionInputText"
+                                         value="#{myBean.selectedValue}" 
+                                         required="true" 
+                                          disabled="#{myBean.disableSelectionForExpressionAnsValueAndBottom()}"
+                                         requiredMessage=" Enter Value !" >
+                                <f:validateLength minimum="1" />
+                            </b:inputText> 
+                        </b:column>
+                        <b:column>
+                            <b:message id="messagesValueID" showDetail="true" 
+                                       for="formExpCalculator:selectedServiceValueExpressionInputText" />
+                        </b:column>
+                    </b:row>
+
+                    <b:row>
+                        <b:column style="margin-bottom: 5px" >
+
+                            <b:commandButton id="ValidateButtonID" class="btn btn-primary"
+                                             ajax="true" 
+                                             value=" Submit Filter "
+                                             large-screen="full-width"
+                                             action="#{myBean.calculateExpression()}"
+                                             disabled="#{myBean.disableSelectionForExpressionAnsValueAndBottom()}"
+                                             update="@form tab_0:selectedServiceScript formExpCalculator:selectedFilterID" 
+                                             oncomplete="timeOut('messagesValueID');
+                                                         timeOut('messagesExpressionID'); 
+                                                         timeOut('messagesFilterID');  
+                                                         timeOut('messagesNotification');" >
+                                <f:param name="skipvalidation" value="" />
+                            </b:commandButton>
+
+                        </b:column>
+                        <b:column style="margin-bottom: 5px " >
+                            <b:commandButton id="ChainButtonID" 
+                                             class="btn btn-primary"
+                                             actionListener="#{myBean.updateRequirementValidation()}"
+                                             disabled="#{myBean.disabledChangeFilerButtom  or myBean.disableSelectionForExpressionAnsValueAndBottom() }"
+                                             update="@form" 
+                                             immediate="true"
+                                             ajax="true" 
+                                             value="Change Filter" 
+                                             large-screen="full-width" >
+                                <f:param name="skipvalidation" value="1" />
+                            </b:commandButton>
+                        </b:column>
+
+                    </b:row>
+
+                    <b:row>
+                        <b:column style="margin-bottom: 5px " >
+
+                            <b:commandButton id="UndoButtonID" class="btn btn-primary btn-block"
+                                             ajax="true"   
+                                             disabled="#{myBean.isEmptyListExpression() or myBean.disableSelectionForExpressionAnsValueAndBottom() }"
+                                             value="Reset Filters"
+                                             update="ValidateButtonID ChainButtonID UndoButtonID messagesNotification tab_0:selectedServiceScript formExpCalculator:selectedExpressionID formExpCalculator:selectedFilterID" 
+                                             immediate="true"
+                                             action="#{myBean.undoLastFilter()}"
+                                             large-screen="full-width"
+                                             oncomplete="timeOut('messagesNotification');"
+                                             />
+                        </b:column>
+
+                        <b:column style="margin-bottom: 5px " >
+                            <b:messages id="messagesNotification"
+                                        severity="warn"
+                                        showDetail="true" 
+                                        tooltipDelay="500"
+                                        style=" margin-bottom:0px ; margin-top:0px; height:33px; 
+                                        padding-left:20px; padding:10px " 
+                                        tooltip-delay-hide="200"  />
+                        </b:column>
+                    </b:row>
+
+                </b:panelGrid>
+
+            </b:form>
+
+
+            <b:panelGrid columns="5" colSpans="2,2,2,3,3" >
+
+                <b:row>
+                    <b:column style="margin-bottom: 5px" > <label class="input-group-addon" style="text-align: left" >Keep</label> </b:column>
+                    <b:column col-md="0" span="0" offset="0" styleClass="col-md-0"  >
+                        <h:form prependId="false"  id="keepIDForm">
+                            <b:selectMultiMenu nonSelectedText="--Keep Result-- "
+                                               small-screen="full" 
+                                               ajax="true"  process="@this"
+                                               medium-screen="full" 
+                                               large-screen="full"
+                                               update="tab_0:selectedServiceScript"
+                                               value="#{myBean.keep}" 
+                                               button-width="150"
+                                               disabled="#{ myBean.acceptItem.contains('template') or myBean.disableSelectionForExpressionAnsValueAndBottom()}"
+                                               id="keepID"  >
+                                <f:selectItems value="#{myBean.selectedServiceFilters}"/>
+                            </b:selectMultiMenu>
+                        </h:form>
+                    </b:column>
+
+                </b:row>
+
+            </b:panelGrid>
+
+            <b:panelGrid columns="5" colSpans="2,3,3,2,2" >
+
+                <b:row></b:row>
+                <b:row></b:row>
+                <b:row></b:row>
+                <b:row></b:row>
+
+                <b:row>
+
+                    <h:form id="checkerForm" >
+
+                        <b:commandButton class="btn btn-outline-primary btn-block"
+                                         id="validat"
+                                         ajax="true"
+                                         update="@none"
+                                         actionListener="#{myBean.displayMessageCopy()}"
+                                         onclick="copy('input_tab_0:selectedServiceScript', 'input_tab_1:selectedServiceScriptCryptor');"
+                                         value="Copy to ClipBoard" >
+                            <f:ajax execute="@form" render="growlMsgCpy" />
+                        </b:commandButton>
+
+                        <b:growl id="growlMsgCpy"  
+                                 placement-from="bottom"
+                                 show-detail="true"
+                                 show-summary="false" 
+                                 allowDismiss="true"
+                                 severity="info"
+                                 delay="5000" escape="true" />
+
+                    </h:form>
+
+                </b:row>
+
+            </b:panelGrid>
+
+            <br /> 
+
+            <b:row id="scriptID">
+
+                <b:tabView activeIndex="0" id="tabv" >
+                    <b:tab title="Script" id="tab_0" >
+                        <b:inputTextarea class="form-control"
+                                 id="selectedServiceScript" 
+                                 value="#{myBean.script}" 
+                                 readonly="true" 
+                                 style="overflow:hidden; margin-bottom: 5px " 
+                                 rows="#{myBean.getSelectedServiceTotalLinesInScript() }" />
+                    </b:tab>
+                    <b:tab title="Script Decryptor " 
+                           id="tab_1" 
+                           rendered="#{myBean.acceptItem.contains('crypt') }">
+                        <b:inputTextarea class="form-control"
+                                 id="selectedServiceScriptCryptor" 
+                                 value="#{myBean.genScriptDecryptor()}" 
+                                 readonly="true"
+                                 style="overflow:hidden; margin-bottom: 5px " 
+                                 rows="#{myBean.getSelectedServiceTotalLinesInScriptDecryptor() }" />
+                    </b:tab>
+                </b:tabView>
+
+            </b:row>
+
+        </b:container>
+
+    </h:body>
+
+
+</html>

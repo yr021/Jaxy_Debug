@@ -1,0 +1,2 @@
+[MASTER] 17:34:01.176 [pool-2-thread-1] ERROR TestCluster - Failed to check cache for java.util.function.Function<T, R> : Type points to itself
+[MASTER] 17:34:50.650 [pool-2-thread-1] ERROR JUnitAnalyzer - Ran out of time while checking tests
