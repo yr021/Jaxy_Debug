@@ -3,7 +3,7 @@
 
  mv source/Jax-Y/target/jax-y-thorntail.jar ./bin_test
 
- cd ./bon_test
+ cd ./bin_test
 
  jobs &>/dev/null
  
